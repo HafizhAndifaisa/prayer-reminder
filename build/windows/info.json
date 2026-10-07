@@ -1,0 +1,15 @@
+{
+	"fixed": {
+		"file_version": "1.0.0"
+	},
+	"info": {
+		"0000": {
+			"ProductVersion": "1.0.0",
+			"CompanyName": "Hafizh Andifaisa",
+			"FileDescription": "Prayer times and reminders for macOS",
+			"LegalCopyright": "© 2026, Hafizh Andifaisa",
+			"ProductName": "Prayer Reminder",
+			"Comments": "Prayer Reminder — Prayer times and reminders for macOS"
+		}
+	}
+}

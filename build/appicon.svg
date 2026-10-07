@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#16203a"/>
+      <stop offset="100%" stop-color="#0a0e18"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#5fe3d4"/>
+      <stop offset="100%" stop-color="#2f8f86"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Rounded background -->
+  <rect x="0" y="0" width="1024" height="1024" rx="224" fill="url(#bg)"/>
+
+  <!-- Crescent moon -->
+  <circle cx="470" cy="380" r="196" fill="url(#glow)"/>
+  <circle cx="548" cy="330" r="178" fill="#111a2e"/>
+
+  <!-- Star -->
+  <path d="M690 250 l22 60 60 22 -60 22 -22 60 -22 -60 -60 -22 60 -22 z" fill="#5fe3d4"/>
+
+  <!-- Mosque silhouette -->
+  <g fill="#0f1729" stroke="#2f8f86" stroke-width="8" stroke-linejoin="round">
+    <!-- main dome -->
+    <path d="M368 800 q0 -170 144 -170 q144 0 144 170 z"/>
+    <!-- finial -->
+    <rect x="504" y="590" width="16" height="46" rx="8"/>
+    <!-- left minaret -->
+    <rect x="286" y="640" width="58" height="160" rx="14"/>
+    <path d="M286 640 q29 -56 58 0 z"/>
+    <!-- right minaret -->
+    <rect x="680" y="640" width="58" height="160" rx="14"/>
+    <path d="M680 640 q29 -56 58 0 z"/>
+  </g>
+  <!-- base -->
+  <rect x="252" y="800" width="520" height="26" rx="13" fill="#0f1729" stroke="#2f8f86" stroke-width="8"/>
+</svg>

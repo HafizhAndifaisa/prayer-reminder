@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <!-- Template icon: solid black shapes on transparency so macOS can adapt
+       the icon to light/dark menu bars automatically. -->
+  <g fill="#000000">
+    <!-- crescent moon -->
+    <path d="M30 6 a22 22 0 1 0 0 44 a18 18 0 1 1 0 -44 z"/>
+    <!-- star -->
+    <path d="M50 12 l2.6 7 7 2.6 -7 2.6 -2.6 7 -2.6 -7 -7 -2.6 7 -2.6 z"/>
+  </g>
+</svg>

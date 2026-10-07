@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.0
+Name=Prayer Reminder
+Comment=Prayer times and reminders for macOS
+# The Exec line includes %u to pass the URL to the application
+Exec=/usr/local/bin/prayer-reminder %u
+Terminal=false
+Type=Application
+Icon=prayer-reminder
+Categories=Utility;
+StartupWMClass=prayer-reminder
+
+ 
