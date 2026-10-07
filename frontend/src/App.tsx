@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { PrayerService, ReminderService } from '../bindings/prayer-reminder'
+import * as NotificationService from '../bindings/github.com/wailsapp/wails/v3/pkg/services/notifications/notificationservice'
+import { Events } from '@wailsio/runtime'
 
 // Derive the model types from the generated bindings so we stay in sync with Go.
 type Schedule = NonNullable<Awaited<ReturnType<typeof PrayerService.GetToday>>>
@@ -37,6 +39,8 @@ function App() {
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [notifyEnabled, setNotifyEnabled] = useState(true)
+  const [notificationAuthorized, setNotificationAuthorized] = useState<boolean | null>(null)
+  const [reminderAlert, setReminderAlert] = useState<{ displayName: string; time: string } | null>(null)
   const [now, setNow] = useState<Date>(new Date())
 
   // Settings modal state.
@@ -70,6 +74,60 @@ function App() {
   useEffect(() => {
     void load()
   }, [load])
+
+  // Ask macOS for notification permission once the application UI is ready.
+  // The native service owns the actual permission dialog and remembers the
+  // user's choice in System Settings.
+  useEffect(() => {
+    let active = true
+    void NotificationService.CheckNotificationAuthorization()
+      .then(async (authorized) => {
+        if (authorized) {
+          if (active) setNotificationAuthorized(true)
+          return
+        }
+        const granted = await NotificationService.RequestNotificationAuthorization()
+        if (active) setNotificationAuthorized(granted)
+      })
+      .catch(() => {
+        if (active) setNotificationAuthorized(false)
+      })
+
+    const cancel = Events.On('reminder:fired', (event) => {
+      const data = event.data as { displayName?: string; time?: string } | null
+      setReminderAlert({
+        displayName: data?.displayName ?? 'sholat',
+        time: data?.time ?? '',
+      })
+    })
+    return () => {
+      active = false
+      cancel()
+    }
+  }, [])
+
+  const testNotification = useCallback(async () => {
+    setError(null)
+    try {
+      const authorized = await NotificationService.CheckNotificationAuthorization()
+      if (!authorized) {
+        const granted = await NotificationService.RequestNotificationAuthorization()
+        setNotificationAuthorized(granted)
+        if (!granted) {
+          setError('Notifikasi diblokir. Aktifkan Prayer Reminder di System Settings → Notifications.')
+          return
+        }
+      }
+      await NotificationService.SendNotification({
+        id: 'prayer-reminder-test',
+        title: 'Prayer Reminder',
+        body: 'Notifikasi percobaan berhasil.',
+      })
+      setNotificationAuthorized(true)
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e))
+    }
+  }, [])
 
   // Tick every second so the countdown updates live.
   useEffect(() => {
@@ -199,6 +257,18 @@ function App() {
 
       {error ? <div className="error">{error}</div> : null}
 
+      {reminderAlert ? (
+        <div className="reminder-alert" role="alert">
+          <div>
+            <strong>Waktunya sholat {reminderAlert.displayName}</strong>
+            <span>{reminderAlert.time}</span>
+          </div>
+          <button type="button" onClick={() => setReminderAlert(null)} aria-label="Tutup pengingat">
+            ×
+          </button>
+        </div>
+      ) : null}
+
       <section className="countdown">
         <span className="countdown-label">Menuju {next ? next.time.displayName : '—'}</span>
         <span className="countdown-value">{countdown}</span>
@@ -223,6 +293,15 @@ function App() {
         </label>
         <span className="method">{schedule?.method ?? ''}</span>
       </footer>
+
+      <div className="notification-tools">
+        <span className={notificationAuthorized === false ? 'notification-status blocked' : 'notification-status'}>
+          {notificationAuthorized === true ? 'Notifikasi macOS aktif' : notificationAuthorized === false ? 'Notifikasi macOS belum diizinkan' : 'Memeriksa notifikasi…'}
+        </span>
+        <button className="test-notification" type="button" onClick={() => void testNotification()}>
+          Tes notifikasi
+        </button>
+      </div>
 
       {settingsOpen ? (
         <div className="modal-backdrop" onClick={() => setSettingsOpen(false)}>

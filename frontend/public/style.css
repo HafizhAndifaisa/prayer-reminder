@@ -109,6 +109,60 @@ body {
   cursor: default;
 }
 
+.reminder-alert {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid rgba(79, 209, 197, 0.35);
+  border-radius: 12px;
+  background: var(--accent-soft);
+  color: var(--text);
+}
+
+.reminder-alert div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.reminder-alert span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.reminder-alert button {
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.notification-tools {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.notification-status.blocked {
+  color: var(--danger);
+}
+
+.test-notification {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 6px 9px;
+  background: var(--panel);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+
 /* Settings modal */
 .modal-backdrop {
   position: fixed;
