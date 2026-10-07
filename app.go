@@ -8,7 +8,7 @@ import (
 
 // version is the application version, kept in sync with the bundle manifests
 // (Info.plist, info.json) and frontend/package.json.
-const version = "1.0.0"
+const version = "1.0.1"
 
 // Shared setting keys used by the store.
 const (

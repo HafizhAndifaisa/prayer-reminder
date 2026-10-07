@@ -17,7 +17,7 @@
         PackageDisplayName="Prayer Reminder"
         PublisherName="CN=Hafizhandi Faisa"
         PublisherDisplayName="Hafizhandi Faisa"
-        Version="0.1.0.0"
+        Version="1.0.1.0"
         PackageDescription="Prayer times and reminders for macOS">
         <Capabilities>
             <Capability Name="runFullTrust" />
