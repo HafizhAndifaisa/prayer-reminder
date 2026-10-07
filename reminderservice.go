@@ -15,6 +15,7 @@ import (
 // each prayer time. It keeps running while the window is hidden.
 type ReminderService struct {
 	app      *application.App
+	window   *application.WebviewWindow
 	prayer   *PrayerService
 	notifier *prayernotifications.NotificationService
 	store    *store.Store
@@ -50,6 +51,13 @@ func (r *ReminderService) start() {
 	go r.loop()
 }
 
+// setWindow gives the scheduler a safe UI fallback when macOS refuses a
+// notification. It is intentionally unexported because the window is wired
+// once during application startup, not controlled by the frontend.
+func (r *ReminderService) setWindow(window *application.WebviewWindow) {
+	r.window = window
+}
+
 // halt stops the reminder loop. It is unexported so it is not bound to the
 // frontend.
 func (r *ReminderService) halt() {
@@ -77,6 +85,7 @@ func (r *ReminderService) loop() {
 	defer ticker.Stop()
 
 	lastFired := map[string]bool{}
+	r.check(lastFired)
 
 	for {
 		select {
@@ -128,11 +137,23 @@ func (r *ReminderService) notify(t prayer.Time) {
 	}
 
 	body := "Waktunya sholat " + t.DisplayName + " (" + t.Time + ")"
-	if err := r.notifier.SendNotification(prayernotifications.NotificationOptions{
+	options := prayernotifications.NotificationOptions{
 		ID:    string(t.Name),
 		Title: "Prayer Reminder",
 		Body:  body,
-	}); err != nil {
+	}
+	if err := r.notifier.SendNotification(options); err != nil {
 		logWarn("send notification", err)
+		// A blocked or unavailable macOS notification must not make the
+		// reminder invisible. Show the existing hidden window as a fallback.
+		if r.window != nil {
+			r.window.Show()
+			r.window.Focus()
+			r.window.EmitEvent("reminder:fired", map[string]string{
+				"name":        string(t.Name),
+				"displayName": t.DisplayName,
+				"time":        t.Time,
+			})
+		}
 	}
 }

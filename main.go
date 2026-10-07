@@ -87,6 +87,7 @@ func main() {
 		window.Hide()
 		e.Cancel()
 	})
+	scheduler.setWindow(window)
 
 	// Menu bar (system tray) so the app stays reachable while hidden.
 	tray := app.SystemTray.New()
@@ -104,8 +105,12 @@ func main() {
 	})
 	tray.SetMenu(menu)
 
-	// Start the reminder loop and run the app. app.Run blocks until exit.
-	scheduler.start()
+	// Start the reminder loop only after the native application and window are
+	// fully initialized. This also makes the first immediate scheduler check
+	// safe when it needs to show the window as a notification fallback.
+	app.Event.OnApplicationEvent(events.Common.ApplicationStarted, func(*application.ApplicationEvent) {
+		scheduler.start()
+	})
 
 	if err := app.Run(); err != nil {
 		log.Fatal(err)
