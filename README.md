@@ -9,7 +9,9 @@ hitung mundur ke sholat berikutnya, dan mengirim notifikasi native tepat pada wa
 
 - **Jadwal sholat harian** — Subuh, Dzuhur, Ashar, Maghrib, Isya
 - **Hitung mundur** ke waktu sholat berikutnya, diperbarui tiap detik
-- **Notifikasi native macOS** tepat saat masuk waktu sholat
+- **Notifikasi native macOS** tepat saat masuk waktu sholat, dengan pengecekan permission
+- **Fallback window** jika native notification gagal
+- **Tes notifikasi** dari dalam aplikasi
 - **System tray (menu bar)** — aplikasi tetap hidup saat jendela ditutup, pengingat tetap berjalan
 - **Autocomplete kota** — daftar kota besar Indonesia dibundel, pencarian instan tanpa internet
 - **Pilihan metode kalkulasi** — daftar metode diambil dari API, bisa disinkron ulang
@@ -58,7 +60,42 @@ open bin/prayer-reminder.app
 ### Menjalankan test
 
 ```bash
-go test ./internal/...
+go test ./...
+```
+
+### Notifikasi macOS
+
+Saat pertama kali dijalankan, Prayer Reminder akan meminta izin untuk mengirim
+notifikasi. Klik **Allow** agar pengingat dapat muncul sebagai banner macOS.
+
+Jika notifikasi tidak muncul, buka:
+
+**System Settings → Notifications → Prayer Reminder**
+
+Pastikan **Allow Notifications** aktif dan pilih gaya notifikasi **Banners**
+atau **Alerts**. Tombol **Tes notifikasi** di dalam aplikasi dapat digunakan
+untuk menguji notifikasi tanpa menunggu waktu sholat berikutnya.
+
+Jika native notification gagal atau diblokir, Prayer Reminder akan membuka
+window aplikasi dan menampilkan banner reminder sebagai fallback.
+
+## Versi dan nama aplikasi
+
+Versi saat ini: **1.0.1**
+
+Nama aplikasi yang ditampilkan di macOS adalah **Prayer Reminder**. Nama
+executable dan bundle menggunakan format teknis **prayer-reminder** dan
+**prayer-reminder.app**. Bundle identifier aplikasi adalah:
+
+```text
+com.hafizhandifaisa.prayer-reminder
+```
+
+### Build bundle macOS
+
+```bash
+wails3 package
+open bin/prayer-reminder.app
 ```
 
 ## Struktur Proyek
